@@ -172,7 +172,7 @@ async function getLatestReleaseTag(token) {
  */
 // TODO: Support more platforms
 async function installUsingNativeInstaller(inputVersion, token) {
-  if (os.platform() !== "linux" || os.arch() !== "x64") {
+  if (os.platform() !== "linux") {
     core.setFailed("Only Linux x86-64 is supported with use-installer: true");
     return "";
   }
@@ -204,9 +204,11 @@ async function installUsingNativeInstaller(inputVersion, token) {
     }
   }
 
+  const arch = os.arch() === 'x64' ? 'x86_64' : os.arch();
+
   const url = version
-    ? `https://github.com/aws/aws-sam-cli/releases/download/v${version}/aws-sam-cli-linux-x86_64.zip`
-    : "https://github.com/aws/aws-sam-cli/releases/latest/download/aws-sam-cli-linux-x86_64.zip";
+    ? `https://github.com/aws/aws-sam-cli/releases/download/v${version}/aws-sam-cli-linux-${arch}.zip`
+    : `https://github.com/aws/aws-sam-cli/releases/latest/download/aws-sam-cli-linux-${arch}.zip`;
 
   const toolPath = await tc.downloadTool(url);
   const extractedDir = await tc.extractZip(toolPath);
